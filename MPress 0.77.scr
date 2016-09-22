@@ -1,0 +1,29 @@
+//Created: bilka00
+//Date: 11.09.2016
+msg "MPress Unpacker (0.77)"
+
+//Clear breakpoints
+bc //clear int3 breakpoints
+bphwc //clear hardware breakpoints
+
+find cip,"C3E9"
+cmp $result,0
+je error
+bp $result+1
+run
+step
+find cip,"61E9"
+cmp $result,0
+je error
+bp $result+1
+run
+step
+
+msg "Found OEP: { EIP }"
+msg "Please DUMP file and IAT recovery"
+log "OEP: { EIP }"
+ret
+
+error:
+msg "Error Unpacking"
+ret

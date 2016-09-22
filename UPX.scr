@@ -1,0 +1,39 @@
+//Created: bilka00
+//Date: 10.09.2016
+msg "UPX Unpacker (1.25 to 3.04)"
+
+//Clear breakpoints
+bc //clear int3 breakpoints
+bphwc //clear hardware breakpoints
+
+//Find oep jump
+find cip,"80E9" //sear pattern for upx 2.0 to 3.04
+cmp $result,0
+je old_upx_2_00
+
+bp $result+1 //break OEP
+run //runing to break
+bc //clear int3 breakpoints
+step //Go to OEP
+jmp good
+
+old_upx_2_00:
+find cip,"61E9" //sear pattern for upx 1.25 to 2.0
+cmp $result,0
+je error
+
+bp $result+1 //break OEP
+run //runing to break
+bc //clear int3 breakpoints
+step //Go to OEP
+jmp good
+
+good: //print good result
+msg "Found OEP: { EIP }"
+msg "Please DUMP file and IAT recovery"
+log "OEP: { EIP }"
+ret
+
+error:
+msg "Error find OEP"
+ret

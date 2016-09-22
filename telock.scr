@@ -1,0 +1,51 @@
+bc
+bphwc
+msg "Error ignoring: 80000003, 80000003, C0000005, C00000lD, C0000094"
+pause
+ 
+msg "Please set memory asses breakpoint on code selection"
+pause
+ 
+erun
+find cip, "FFE0"
+cmp $result, 0
+je error
+log "jmp eax: {$result}"
+bp $result
+erun
+bc
+sti
+sti
+ 
+find cip, "5F5E"
+cmp $result, 0
+je error
+log "pop edi '\n pop esi: {$result}"
+bp $result
+cmp $result, 0
+je error
+erun
+bc
+
+find cip, "E9"
+cmp $result, 0
+je error
+log "JMP : {$result}"
+bp $result
+erun
+bc
+sti
+msg "Please set memory execute breakpoint on code selection"
+pause
+
+erun
+bc
+bphwc
+msg "Found OEP: { EIP }"
+msg "Please DUMP file and IAT recovery"
+log "OEP: { EIP }"
+ret
+
+error:
+msg "Error unpacking"
+ret

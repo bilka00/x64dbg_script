@@ -1,0 +1,25 @@
+//Created: bilka00
+//Date: 10.09.2016
+msg "ASPack Unpacker (2.12)"
+
+//Clear breakpoints
+bc //clear int3 breakpoints
+bphwc //clear hardware breakpoints
+
+find CIP,"617508B801"
+cmp $result,0
+je error
+bp $result+1
+erun
+sti
+sti
+sti
+bc
+msg "Found OEP: { EIP }"
+msg "Please DUMP file and IAT recovery"
+log "OEP: { EIP }"
+ret
+
+error:
+msg "Error Unpacking"
+ret
